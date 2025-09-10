@@ -7,7 +7,7 @@
 
 # Note at this time there is minimal error handling.
 
-set -euxo pipefail
+set -euo pipefail
 
 if [ $# -ne 1 ]; then
   echo "Usage: $0 <result.jsonl>"
