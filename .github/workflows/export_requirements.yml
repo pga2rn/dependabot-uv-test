@@ -1,0 +1,53 @@
+name: Export requirements.txt on uv.lock file changed
+
+permissions:
+  contents: read
+  packages: read
+  actions: read
+
+on:
+  pull_request:
+    branches:
+      - main
+    paths:
+      - 'uv.lock'
+  # allow manual dispatch of this workflow
+  workflow_dispatch:
+
+jobs:
+  export-requirements-txt:
+    runs-on: ubuntu-latest
+    timeout-minutes: 1
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.ref }}
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v6
+
+      - name: Setup python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: generate requirements.txt
+        run: |
+          uv export --frozen --no-dev --no-editable --no-hashes --no-emit-project > requirements.txt
+
+      - name: commit change if needed
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+
+          if git diff --exit-code requirements.txt; then
+            echo "skip commit as requirements.txt is not changed"
+          else
+            echo "detect requirements.txt updated, commit change ..."
+            git add requirements.txt
+            git commit -m "[GHA] Update requirements.txt on pyproject.toml changed"
+            git push
+          fi
