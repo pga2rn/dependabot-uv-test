@@ -29,7 +29,7 @@ jobs:
       - name: Patch pyproject.toml
         run: |
           pip install tomli-w==1.2.0
-          python3 .github/scripts/patch_pyproject.py pyproject.toml
+          python3 repo/.github/scripts/patch_pyproject.py pyproject.toml
 
       - name: Download CLI
         env:
