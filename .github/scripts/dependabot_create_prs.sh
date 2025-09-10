@@ -7,7 +7,7 @@
 
 # Note at this time there is minimal error handling.
 
-set -euo pipefail
+set -euxo pipefail
 
 if [ $# -ne 1 ]; then
   echo "Usage: $0 <result.jsonl>"
@@ -15,6 +15,9 @@ if [ $# -ne 1 ]; then
 fi
 
 INPUT="$1"
+
+echo "Input request: "
+cat ${INPUT}
 
 git config --global user.email "support@github.com"
 git config --global user.name "Dependabot Standalone"

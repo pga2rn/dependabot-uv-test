@@ -20,6 +20,12 @@ jobs:
         with:
           path: repo
 
+      # required by running pyproject.toml patching script
+      - name: Setup Python 3.13
+        uses: actions/setup-python@v5
+        with:
+            python-version: 3.13
+
       - name: Download CLI
         env:
           # To use GitHub CLI in a GitHub Actions workflow, set the GH_TOKEN environment variable.
@@ -56,8 +62,6 @@ jobs:
       pull-requests: write
     runs-on: ubuntu-latest
     needs: run-dependabot
-    env:
-        CREATE_PRS_SCRIPT: .github/scripts/dependabot_create_prs.sh
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -71,4 +75,4 @@ jobs:
         env:
           # To use GitHub CLI in a GitHub Actions workflow, set the GH_TOKEN environment variable.
           GH_TOKEN: ${{ github.token }}
-        run: bash "${CREATE_PRS_SCRIPT}" result.jsonl
+        run: bash .github/scripts/dependabot_create_prs.sh result.jsonl
