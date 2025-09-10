@@ -37,9 +37,10 @@ jobs:
         with:
           python-version: '3.12'
 
-      - name: Upate uv.lock
+      - name: Upate lock files
         run: |
           uv lock
+          uv export --frozen --no-dev --no-editable --no-hashes --no-emit-project > requirements.txt
 
       - name: commit change if needed
         run: |
