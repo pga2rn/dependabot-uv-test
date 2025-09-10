@@ -1,4 +1,4 @@
-name: Export requirements.txt on uv.lock file changed
+name: Update uv.lock and export requirements.txt as needed
 
 permissions:
   contents: read
@@ -11,17 +11,20 @@ on:
       - main
     paths:
       - 'uv.lock'
+      - 'pyproject.toml'
   # allow manual dispatch of this workflow
   workflow_dispatch:
 
 jobs:
-  export-requirements-txt:
+  update-lockfiles:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
     timeout-minutes: 1
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
         with:
           ref: ${{ github.event.pull_request.head.ref }}
           token: ${{ secrets.GITHUB_TOKEN }}
@@ -30,24 +33,25 @@ jobs:
         uses: astral-sh/setup-uv@v6
 
       - name: Setup python
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@v6
         with:
           python-version: '3.12'
 
-      - name: generate requirements.txt
+      - name: Upate uv.lock
         run: |
-          uv export --frozen --no-dev --no-editable --no-hashes --no-emit-project > requirements.txt
+          uv lock
 
       - name: commit change if needed
         run: |
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
 
-          if git diff --quiet requirements.txt; then
-            echo "skip commit as requirements.txt is not changed"
-          else
-            echo "detect requirements.txt updated, commit change ..."
-            git add requirements.txt
-            git commit -m "[GHA] Update requirements.txt on pyproject.toml changed"
-            git push
-          fi
+          for lockfile in uv.lock requirements.txt; do
+            if git diff --quiet ${lockfile}; then
+              echo "skip commit as ${lockfile} is not changed"
+            else
+              echo "detect ${lockfile} updated, commit change ..."
+              git add ${lockfile}
+              git commit -m "[GHA] Update ${lockfile} as needed"
+              git push
+            fi
