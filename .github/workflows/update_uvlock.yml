@@ -45,7 +45,7 @@ jobs:
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
 
-          if git diff --exit-code uv.lock; then
+          if git diff --quiet uv.lock; then
             echo "skip commit as uv.lock is not changed"
           else
             echo "detect uv.lock updated, commit change ..."
