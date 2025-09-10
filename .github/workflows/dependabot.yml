@@ -26,6 +26,11 @@ jobs:
         with:
             python-version: 3.13
 
+      - name: Patch pyproject.toml
+        run: |
+          pip install tomli-w==1.2.0
+          python3 .github/scripts/patch_pyproject.py pyproject.toml
+
       - name: Download CLI
         env:
           # To use GitHub CLI in a GitHub Actions workflow, set the GH_TOKEN environment variable.
