@@ -19,6 +19,7 @@ jobs:
         # Checkout to a directory to keep the working dir clean for the update.
         with:
           path: repo
+          fetch-depth: 0
 
       # required by running pyproject.toml patching script
       - name: Setup Python 3.13
