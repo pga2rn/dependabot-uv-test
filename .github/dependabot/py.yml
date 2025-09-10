@@ -1,0 +1,12 @@
+job:
+  # this is the directory defined in dependabot-core for the ecosystem
+  package-manager: uv
+  allowed-updates:
+    - dependency-type: direct
+      update-type: all
+  source:
+    provider: github
+    repo: pga2rn/dependabot-uv-test
+    # looks absolute, but this is relative to the root of the repo
+    directory: /
+    branch: main
