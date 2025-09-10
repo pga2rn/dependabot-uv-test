@@ -1,0 +1,33 @@
+[build-system]
+build-backend = "hatchling.build"
+
+requires = [ "hatch-vcs", "hatchling>=1.20" ]
+
+[project]
+name = "hw"
+readme = "README.md"
+license = "Apache-2.0"
+license-files = [ "LICENSE" ]
+requires-python = ">=3.8"
+classifiers = [
+  "License :: OSI Approved :: Apache Software License",
+  "Operating System :: OS Independent",
+  "Programming Language :: Python :: 3 :: Only",
+  "Programming Language :: Python :: 3.8",
+  "Programming Language :: Python :: 3.9",
+  "Programming Language :: Python :: 3.10",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+  "Programming Language :: Python :: 3.13",
+]
+dynamic = [ "version" ]
+dependencies = [ "pydantic>=2.6,<3", "typing-extensions>=4" ]
+
+[tool.hatch.version]
+source = "vcs"
+
+[tool.hatch.version.raw-options]
+fallback_version = "0.0.0"
+
+[tool.hatch.build.hooks.vcs]
+version-file = "src/hw/_version.py"
