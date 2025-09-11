@@ -23,9 +23,10 @@ jobs:
       # NOTE: for unknown reason the base commit hash in
       #       result.jsonl is not correct.
       - name: Record the current commit hash
+        working-directory: repo
         run: |
-          git rev-parse HEAD > base_commit
-          cat base_commit
+          git rev-parse HEAD > ../base_commit
+          cat ../base_commit
 
       # required by running pyproject.toml patching script
       - name: Setup Python 3.13
