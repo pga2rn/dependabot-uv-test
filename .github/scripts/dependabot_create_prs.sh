@@ -15,6 +15,7 @@ if [ $# -ne 1 ]; then
 fi
 
 INPUT="$1"
+BASE_SHA=${BASE_COMMIT}
 
 echo "Input request: "
 cat ${INPUT}
@@ -26,7 +27,7 @@ git config --global advice.detachedHead false
 # Parse each create_pull_request event
 jq -c 'select(.type == "create_pull_request")' "$INPUT" | while read -r event; do
   # Extract fields
-  BASE_SHA=$(echo "$event" | jq -r '.data."base-commit-sha"')
+  # BASE_SHA=$(echo "$event" | jq -r '.data."base-commit-sha"')
   PR_TITLE=$(echo "$event" | jq -r '.data."pr-title"')
   PR_BODY=$(echo "$event" | jq -r '.data."pr-body"')
   COMMIT_MSG=$(echo "$event" | jq -r '.data."commit-message"')
