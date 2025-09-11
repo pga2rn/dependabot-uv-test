@@ -85,9 +85,8 @@ jobs:
 
   create-prs:
     permissions:
-      # This job creates PRs, so it needs write access.
-      contents: write
-      pull-requests: write
+      contents: read
+      pull-requests: read
     runs-on: ubuntu-latest
     needs: run-dependabot
     steps:
