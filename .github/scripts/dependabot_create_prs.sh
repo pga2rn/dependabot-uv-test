@@ -82,6 +82,10 @@ jq -c 'select(.type == "create_pull_request")' "$INPUT" | while read -r event; d
     gh pr create --title "$PR_TITLE_PREFIX$PR_TITLE" --body "$PR_BODY$EXTRA_PR_BODY" --base main --head "$BRANCH_NAME" --label dependencies || true
   fi
 
+  # after branch update, trigger update_lockfiles workflow
+  echo "Trigger update_lockfiles workflow on $BRANCH_NAME ..."
+  gh workflow run update_lockfiles.yml --ref $BRANCH_NAME || true
+
   # Return to main branch for next PR
   echo "Finish up processing $BRANCH_NAME"
   git checkout main
