@@ -16,6 +16,11 @@ on:
   # allow manual dispatch of this workflow
   workflow_dispatch:
 
+concurrency:
+  # for each branch, only one active run of this workflow is allowed
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   update-lockfiles: 
     if: github.event.action != 'labeled' || github.event.label.name == 'trigger_update_lockfiles'
