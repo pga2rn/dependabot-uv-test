@@ -28,6 +28,7 @@ dynamic = [
     "version",
 ]
 dependencies = [
+    "cryptography~=45.0",
     "pydantic>=2.6,<3",
     "typing-extensions>=4",
 ]
