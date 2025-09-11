@@ -19,7 +19,13 @@ jobs:
         # Checkout to a directory to keep the working dir clean for the update.
         with:
           path: repo
-          fetch-depth: 0
+
+      # NOTE: for unknown reason the base commit hash in
+      #       result.jsonl is not correct.
+      - name: Record the current commit hash
+        run: |
+          git rev-parse HEAD > base_commit
+          cat base_commit
 
       # required by running pyproject.toml patching script
       - name: Setup Python 3.13
@@ -59,7 +65,9 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: dependabot-result
-          path: result.jsonl
+          path: |
+            base_commit
+            result.jsonl
 
   create-prs:
     permissions:
@@ -83,4 +91,6 @@ jobs:
         env:
           # To use GitHub CLI in a GitHub Actions workflow, set the GH_TOKEN environment variable.
           GH_TOKEN: ${{ github.token }}
-        run: bash .github/scripts/dependabot_create_prs.sh result.jsonl
+        run: |
+          BASE_COMMIT="$(cat base_commit)"
+          bash .github/scripts/dependabot_create_prs.sh result.jsonl
