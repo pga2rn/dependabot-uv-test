@@ -1,5 +1,7 @@
 name: Run Dependabot
 on:
+  schedule:
+    - cron: '10 */1 * * *' 
   pull_request:
     branches:
       - main
