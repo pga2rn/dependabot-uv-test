@@ -34,10 +34,11 @@ jobs:
         with:
             python-version: 3.13
 
-      - name: Patch pyproject.toml
+      - name: Patch pyproject.toml and cleanup requirements.txt
         run: |
           pip install tomli-w==1.2.0
           python3 repo/.github/scripts/patch_pyproject.py repo/pyproject.toml
+          rm repo/requirements.txt
 
       - name: Download CLI
         env:
