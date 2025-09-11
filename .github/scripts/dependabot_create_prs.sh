@@ -17,7 +17,7 @@ fi
 INPUT="$1"
 BASE_SHA=${BASE_COMMIT}
 PR_TITLE_PREFIX="deps: "
-EXTRA_PR_BODY=" Label the PR with trigger_dependabot to trigger a rebase if needed."
+EXTRA_PR_BODY=""
 
 echo "Input request: "
 cat ${INPUT}
@@ -81,10 +81,6 @@ jq -c 'select(.type == "create_pull_request")' "$INPUT" | while read -r event; d
   if [ "$pr_exists" != "true" ]; then
     gh pr create --title "$PR_TITLE_PREFIX$PR_TITLE" --body "$PR_BODY$EXTRA_PR_BODY" --base main --head "$BRANCH_NAME" --label dependencies || true
   fi
-
-  # NOTE: after PR is updated, we might also need to update the lock files,
-  #       trigger the update_lockfiles workflow with label trigger_update_lockfiles.
-  gh pr edit $BRANCH_NAME --add-label trigger_update_lockfiles || true
 
   # Return to main branch for next PR
   echo "Finish up processing $BRANCH_NAME"
