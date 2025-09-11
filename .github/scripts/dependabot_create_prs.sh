@@ -17,6 +17,7 @@ fi
 INPUT="$1"
 BASE_SHA=${BASE_COMMIT}
 PR_TITLE_PREFIX="deps: "
+EXTRA_PR_BODY="\nLabel the PR with trigger_dependabot to trigger a rebase if needed."
 
 echo "Input request: "
 cat ${INPUT}
@@ -61,7 +62,7 @@ jq -c 'select(.type == "create_pull_request")' "$INPUT" | while read -r event; d
   git push -f origin "$BRANCH_NAME"
 
   # Create PR using gh CLI
-  gh pr create --title "$PR_TITLE_PREFIX$PR_TITLE" --body "$PR_BODY" --base main --head "$BRANCH_NAME" --label dependencies || true
+  gh pr create --title "$PR_TITLE_PREFIX$PR_TITLE" --body "$PR_BODY $EXTRA_PR_BODY" --base main --head "$BRANCH_NAME" --label dependencies || true
 
   # Return to main branch for next PR
   git checkout main
