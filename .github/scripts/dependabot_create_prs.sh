@@ -39,6 +39,22 @@ jq -c 'select(.type == "create_pull_request")' "$INPUT" | while read -r event; d
   echo "  Base SHA: $BASE_SHA"
   echo "  Branch: $BRANCH_NAME"
 
+  pr_status=$(gh pr view "$BRANCH_NAME" --json state -q .state 2>/dev/null || true)
+  if [ -n "$pr_status" ]; then
+      pr_exists=true
+  else
+      pr_exists=false
+      pr_status=""
+  fi
+
+  echo "pr_exists=$pr_exists"
+  echo "pr_status=$pr_status"
+
+  if [ "$pr_status" = "CLOSED" ]; then
+    echo "Branch $BRANCH_NAME is closed, skip processing"
+    continue
+  fi
+
   # Create and checkout new branch from base commit
   git fetch origin
   git checkout "$BASE_SHA"
@@ -62,12 +78,15 @@ jq -c 'select(.type == "create_pull_request")' "$INPUT" | while read -r event; d
   git push -f origin "$BRANCH_NAME"
 
   # Create PR using gh CLI
-  gh pr create --title "$PR_TITLE_PREFIX$PR_TITLE" --body "$PR_BODY$EXTRA_PR_BODY" --base main --head "$BRANCH_NAME" --label dependencies || true
+  if [ "$pr_exists" != "true" ]; then
+    gh pr create --title "$PR_TITLE_PREFIX$PR_TITLE" --body "$PR_BODY$EXTRA_PR_BODY" --base main --head "$BRANCH_NAME" --label dependencies || true
+  fi
 
   # NOTE: after PR is updated, we might also need to update the lock files,
   #       trigger the update_lockfiles workflow with label trigger_update_lockfiles.
   gh pr edit $BRANCH_NAME --add-label trigger_update_lockfiles || true
 
   # Return to main branch for next PR
+  echo "Finish up processing $BRANCH_NAME"
   git checkout main
 done
