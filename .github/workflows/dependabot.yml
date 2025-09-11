@@ -91,6 +91,6 @@ jobs:
           # To use GitHub CLI in a GitHub Actions workflow, set the GH_TOKEN environment variable.
           GH_TOKEN: ${{ github.token }}
         run: |
-          BASE_COMMIT="$(cat base_commit)"
+          export BASE_COMMIT="$(cat base_commit)"
           echo ${BASE_COMMIT}
           bash .github/scripts/dependabot_create_prs.sh result.jsonl
