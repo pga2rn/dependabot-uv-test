@@ -64,6 +64,10 @@ jq -c 'select(.type == "create_pull_request")' "$INPUT" | while read -r event; d
   # Create PR using gh CLI
   gh pr create --title "$PR_TITLE_PREFIX$PR_TITLE" --body "$PR_BODY$EXTRA_PR_BODY" --base main --head "$BRANCH_NAME" --label dependencies || true
 
+  # NOTE: after PR is updated, we might also need to update the lock files,
+  #       trigger the update_lockfiles workflow with label trigger_update_lockfiles.
+  gh pr edit $BRANCH_NAME --add-label trigger_update_lockfiles || true
+
   # Return to main branch for next PR
   git checkout main
 done
