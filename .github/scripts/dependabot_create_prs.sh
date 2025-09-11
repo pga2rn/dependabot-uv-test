@@ -44,7 +44,7 @@ jq -c 'select(.type == "create_pull_request")' "$INPUT" | while read -r event; d
 
   # Apply file changes
   echo "$event" | jq -c '.data."updated-dependency-files"[]' | while read -r file; do
-    FILE_PATH=$(echo "$file" | jq -r '.directory + "/" + .name' | sed 's#^/##')
+    FILE_PATH=`pwd`/$(echo "$file" | jq -r '.directory + "/" + .name' | sed 's#^/##')
     DELETED=$(echo "$file" | jq -r '.deleted')
     if [ "$DELETED" = "true" ]; then
       git rm -f "$FILE_PATH" || true
