@@ -30,7 +30,7 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          gh pr edit --remove-label trigger_update_lockfiles ${{ github.event.pull_request.number }}
+          gh pr edit ${{ github.event.pull_request.number }} --remove-label trigger_update_lockfiles
 
       - name: Checkout repository
         uses: actions/checkout@v5
