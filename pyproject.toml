@@ -28,7 +28,7 @@ dynamic = [
     "version",
 ]
 dependencies = [
-    "anyio",
+    "anyio>4.2,<5",
     "cryptography~=45.0",
     "aiohttp~=3.12",
     "pydantic>=2.6,<3",
