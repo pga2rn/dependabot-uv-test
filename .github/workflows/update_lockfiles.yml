@@ -12,17 +12,26 @@ on:
     paths:
       - 'uv.lock'
       - 'pyproject.toml'
+    types: [labeled, opened, reopened, synchronize]
   # allow manual dispatch of this workflow
   workflow_dispatch:
 
 jobs:
-  update-lockfiles:
+  update-lockfiles: 
+    if: github.event.action != 'labeled' || github.event.label.name == 'trigger_update_lockfiles'
     runs-on: ubuntu-latest
     permissions:
       contents: write
     timeout-minutes: 1
 
     steps:
+      - name: Clear label if triggerred by labeled
+        if: github.event.action == 'labeled' && github.event.label.name == 'trigger_update_lockfiles'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh pr edit --remove-label trigger_update_lockfiles ${{ github.event.pull_request.number }}
+
       - name: Checkout repository
         uses: actions/checkout@v5
         with:
