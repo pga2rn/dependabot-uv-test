@@ -5,7 +5,6 @@ on:
   pull_request:
     branches:
       - main
-    types: [labeled]
   # enable manually triggering the workflow
   workflow_dispatch:
 
@@ -15,24 +14,7 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  pre-condition:
-    if: github.event.action != 'labeled' || github.event.label.name == 'trigger_dependabot'
-    permissions:
-      pull-requests: write
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Clear label if triggerred by labeled
-        if: github.event.action == 'labeled' && github.event.label.name == 'trigger_dependabot'
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          gh pr edit ${{ github.event.pull_request.number }} --remove-label trigger_dependabot
-
   run-dependabot:
-    needs: pre-condition
     permissions:
       # Important not to give Dependabot write access in case it runs arbitrary
       # code as some ecosystems do.
