@@ -14,7 +14,7 @@ attrs==25.3.0
     # via aiohttp
 cffi==2.0.0 ; platform_python_implementation != 'PyPy'
     # via cryptography
-cryptography==45.0.7
+cryptography==46.0.5
     # via hw
 frozenlist==1.7.0
     # via
