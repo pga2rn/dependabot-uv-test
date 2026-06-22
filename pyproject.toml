@@ -7,7 +7,6 @@ requires = [
 
 [project]
 name = "hw"
-readme = "README.md"
 license = "Apache-2.0"
 license-files = [
     "LICENSE",
@@ -24,31 +23,21 @@ classifiers = [
     "Programming Language :: Python :: 3.12",
     "Programming Language :: Python :: 3.13",
 ]
-dynamic = [
-    "version",
-]
 dependencies = [
     "urllib3>=2.2.2,<2.6",
     "anyio>4.2,<5",
     "cryptography~=45.0",
-    "aiohttp~=3.12",
+    "aiohttp~=3.13",
     "pydantic>=2.6,<3",
     "typing-extensions>=4",
 ]
+version = "0.0.0"
 
 [dependency-groups]
 dev = [
     "tomli-w==1.2.0",
 ]
 
-[tool.hatch.metadata.hooks.custom]
-path = "scripts/custom_build_hook.py"
-
-[tool.hatch.version]
-source = "vcs"
-
-[tool.hatch.version.raw-options]
-fallback_version = "0.0.0"
-
 [tool.hatch.build.hooks.vcs]
 version-file = "src/hw/_version.py"
+
